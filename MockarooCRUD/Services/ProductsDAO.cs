@@ -6,10 +6,32 @@ namespace MockarooCRUD.Services
     public class ProductsDAO : IProductDataService
     {
         string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Test;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+        
+        
         public int Delete(ProductModel product)
         {
-            throw new NotImplementedException();
+            int newIdNumber = -1;
+            string sqlStatement= "DELETE FROM dbo.Products WHERE Id @Id";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                SqlCommand command = new SqlCommand(sqlStatement, connection);
+
+                command.Parameters.AddWithValue("Id", product.Id);
+                try
+                {
+                    connection.Open();
+                    newIdNumber = Convert.ToInt32(command.ExecuteScalar());
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+            return newIdNumber;
         }
+
+
 
         public List<ProductModel> GetAllProducts()
         {
@@ -41,14 +63,64 @@ namespace MockarooCRUD.Services
             return foundProducts;
         }
 
-        public ProductModel GetProduductById(int id)
+        public ProductModel GetProductById(int id)
         {
-            throw new NotImplementedException();
+            ProductModel foundProduct =null;
+
+            string sqlStatement = "SELECT * FROM dbo.Products WHERE Id = @Id";
+
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                SqlCommand command = new SqlCommand(sqlStatement, connection);
+                command.Parameters.AddWithValue("@Id", id);
+
+                try
+                {
+                    connection.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                        foundProduct=new ProductModel
+                        {
+                            Id = (int)reader[0],
+                            Name = (string)reader[1],
+                            Price = (decimal)
+                           reader[2],
+                            Description = (string)reader[3]
+                        };
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+            return foundProduct;
         }
 
         public int Insert(ProductModel product)
         {
-            throw new NotImplementedException();
+            int newIdNumber = -1;
+            string sqlStatement = "INSERT INTO dbo.Products (Name,Price,Description) VALUES (@Name,@Price,@Description)";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                SqlCommand command = new SqlCommand(sqlStatement, connection);
+                command.Parameters.AddWithValue("Name", product.Name);
+                command.Parameters.AddWithValue("Price", product.Price);
+                command.Parameters.AddWithValue("Description", product.Description);
+                try
+                {
+                    connection.Open();
+                    newIdNumber = Convert.ToInt32(command.ExecuteScalar());
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+            return newIdNumber;
+
         }
 
         public List<ProductModel> SearchProducts(string searchTerm)
@@ -86,9 +158,31 @@ namespace MockarooCRUD.Services
             return foundProducts;
         }
 
+
+
         public int Update(ProductModel product)
         {
-            throw new NotImplementedException();
+            int newIdNumber = -1;
+            string sqlStatement = "UPDATE dbo.Products SET Name= @Name, Price = @Price, Description =@Description WHERE Id =@Id";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                SqlCommand command = new SqlCommand(sqlStatement, connection);
+                command.Parameters.AddWithValue("Name", product.Name);
+                command.Parameters.AddWithValue("Price", product.Price);
+                command.Parameters.AddWithValue("Description", product.Description);
+                command.Parameters.AddWithValue("Id", product.Id);
+                try
+                {
+                    connection.Open();
+                    newIdNumber = Convert.ToInt32(command.ExecuteScalar());
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+            return newIdNumber;
         }
     }
 }

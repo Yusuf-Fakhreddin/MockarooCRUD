@@ -35,7 +35,7 @@ namespace MockarooCRUD.Services
             return productsList;
         }
 
-        public ProductModel GetProduductById(int id)
+        public ProductModel GetProductById(int id)
         {
             throw new NotImplementedException();
         }

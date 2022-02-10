@@ -6,7 +6,7 @@ namespace MockarooCRUD.Services
     {
         List<ProductModel> GetAllProducts();
         List<ProductModel> SearchProducts(string searchTerm);
-        ProductModel GetProduductById(int id);
+        ProductModel GetProductById(int id);
         int Insert(ProductModel product);
         int Delete(ProductModel product);
         int Update(ProductModel product);
